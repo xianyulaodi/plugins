@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>验证码输入测试</title>
+  <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+    .wrap {
+      width: 300px;
+      height: 300px;
+      padding: 10px;
+      margin: 100px auto;
+      background: #ccc;
+    }
+    .lc_vertify_code {
+      position: relative;
+      overflow: hidden;
+    }
+    .lc_vertify_code input {
+      position: absolute;
+      z-index: 2;
+      height: 40px;
+      line-height: 40px;
+      left: 5px;
+      top: 0;
+      opacity: 1;
+      background: none;
+      border: none;
+      outline: none;
+      width: 100%;
+    }
+    .lc_vertify_code input.hidden {
+      opacity: 0;
+    }
+    .lc_vertify_code label {
+      display: block;
+      float: left;
+      width: 40px;
+      height: 40px;
+      border-bottom: 1px solid #333;
+      border-top: 1px solid #333;
+      border-left: 1px solid #333;
+      line-height: 40px;
+      text-align: center;
+    }
+    .lc_vertify_code .label-last {
+      border-right: 1px solid #333;
+    }
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      color: #fff;
+      padding: 5px 10px;
+      background: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="lc_vertify_code"></div>
+    <a href="javascript:void(0);" class="btn" id="confirm">确认</a>
+  </div>
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<script>
+
+// 实现类似于微信支付输入密码时的输入框
+// $root 必传，如：$('.lc_vertify_code');  容器的class必须有 lc_vertify_code
+function Vertify_code_input(options) {
+  var options = $.extend({
+    max_length: 6,
+    $root: '',
+    autofocus: true
+  }, options);
+  this.options = options;
+  this.$root = options.$root;
+  this.init();
+}
+
+Vertify_code_input.prototype = {
+
+  init: function() {
+    this._create_temp();
+    this._bind_event();
+  },
+
+  _create_temp: function() {
+    var options = this.options;
+    var $root = this.$root;
+    var max_length = options.max_length;
+    var autofocus = options.autofocus;
+    var vertify_code_html = ['<input type="text" maxlength="' + max_length + '" autofocus="' + autofocus + '" />'];
+    for(var i = 0; i < max_length; i++) {
+      var label_last_cls = i == (max_length - 1) ? 'label-last' : ''; 
+      vertify_code_html.push('<label class="'+ label_last_cls +'"></label>');
+    };
+    $root.html(vertify_code_html.join(''));
+  },
+
+  get_val: function() {
+    return this.$root.find('input').val() || '';
+  },
+
+  _bind_event: function() {
+    var $root = this.$root;
+    var max_length = this.options.max_length;
+    $root.on('input', 'input', function() {
+      var $el = $(this);
+      var val = $el.val().replace(/\D+/g, '');
+      $el.val(val); 
+      var code_arr = val.split('');
+      if(code_arr.length == 0) {
+        $el.removeClass('hidden');
+      } else {
+        $el.addClass('hidden');
+      }
+      for(var i = 0; i < max_length; i++) {
+        $root.find('label').eq(i).html(code_arr[i] || '');
+      }
+    });
+  },
+
+  reset: function() {
+    var $root = this.$root;
+    var $input = $root.find('input');
+    $input.val('');
+    $input.trigger('input');
+    $input.focus();
+  },
+
+  clear: function() {
+    var $root = this.$root;
+    $root.off('input','input');
+    $root.html('');
+  }
+}
+
+$(function() {
+  var vertify_code = new Vertify_code_input({ $root: $('.lc_vertify_code')});
+
+  $('#confirm').click(function() {
+    alert('您输入的值为：' + vertify_code.get_val());
+    vertify_code.reset();
+  });
+});
+</script>
+</html>
