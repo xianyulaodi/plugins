@@ -1,0 +1,55 @@
+div,ul,a,li,h1,h2 {
+  padding: 0;
+  margin: 0;
+}
+li {
+  list-style: none;
+}
+.lc-mask {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  background: rgba(0, 0, 0, .5);
+  
+}
+.lc-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  min-width: 200px;
+  z-index: 3;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+  border-radius: 5px;
+}
+.lc-title {
+  padding: 10px;
+  font-size: 15px;
+  color: #000;
+  font-weight: normal;
+  text-align: center;
+  border-bottom: 1px solid #ccc;
+}
+.lc-content {
+  padding: 10px;
+  text-align: center;
+}
+.lc-btn-group {
+  text-align: center;
+  padding-bottom: 10px;
+}
+.lc-btn {
+  display: inline-block;
+  min-width: 80px;
+  height: 25px;
+  margin: 0 3px;
+  color: #fff;
+  text-align: center;
+  line-height: 25px;
+  cursor: pointer;
+  background: #5757d6;
+}
